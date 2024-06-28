@@ -12,7 +12,8 @@ love.graphics.setDefaultFilter("nearest")
 myGame = require("game")
 myHero = require("hero")
 myEnnemy = require("ennemy")
-myMap = require("map1")
+--myMap = require("map1")
+myInterface = require("interface")
 
 function love.load()
 
@@ -34,8 +35,11 @@ function love.update(dt)
 end
 
 function love.draw()
+    
+    myInterface.draw()
     myHero.draw()
     myEnnemy.draw()
+    
 end
 
 function love.keypressed(key)
