@@ -49,8 +49,6 @@ function ennemy.update(dt)
             ennemy.changedir(dt,enn)
         end
     end
-    
-
 end
 
 function ennemy.createEnnemy()

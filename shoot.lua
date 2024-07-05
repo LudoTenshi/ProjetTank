@@ -32,47 +32,52 @@ function shoot.update(dt,hero)
     shoot.ox = hero.ox
     shoot.oy = hero.oy
 
-    local mouseX,mouseY = love.mouse.getPosition()
+    if myHero.shoot then
+        local mouseX,mouseY = love.mouse.getPosition()
 
-    shoot.aim(mouseX,mouseY)
-
-    shoot.shootDelayNow = shoot.shootDelayNow + dt
-
-    if love.mouse.isDown(1) and shoot.shootDelayNow > shoot.shootDelay then
-        shoot.shootval(shoot.fireAngle,shoot.x,shoot.y,dt)
-        shoot.shootDelayNow = 0
-    end
-
-    --shoot 
-    for i, myShoot in ipairs(shoot.shoot) do
-        myShoot.velo = myShoot.velo + dt * 1.5
-        myShoot.x = myShoot.x + shoot.shootpseed * math.cos(myShoot.angle) * myShoot.velo
-        myShoot.y = myShoot.y + shoot.shootpseed * math.sin(myShoot.angle) * myShoot.velo
-
-        if math.dist(myShoot.xInit,myShoot.yInit,myShoot.x,myShoot.y) > shoot.distance then 
-            table.remove(shoot.shoot,i)
+        shoot.aim(mouseX,mouseY)
+    
+        shoot.shootDelayNow = shoot.shootDelayNow + dt
+    
+        if love.mouse.isDown(1) and shoot.shootDelayNow > shoot.shootDelay then
+            shoot.shootval(shoot.fireAngle,shoot.x,shoot.y,dt)
+            shoot.shootDelayNow = 0
         end
+    
+        --shoot 
+        for i, myShoot in ipairs(shoot.shoot) do
+            myShoot.velo = myShoot.velo + dt * 1.5
+            myShoot.x = myShoot.x + shoot.shootpseed * math.cos(myShoot.angle) * myShoot.velo
+            myShoot.y = myShoot.y + shoot.shootpseed * math.sin(myShoot.angle) * myShoot.velo
+    
+            if math.dist(myShoot.xInit,myShoot.yInit,myShoot.x,myShoot.y) > shoot.distance then 
+                table.remove(shoot.shoot,i)
+            end
+        end
+    
+        --affichage du shoot sur 2 frames
+        myGame.CurrentSprite("shoot",false,dt)
     end
-
-    --affichage du shoot sur 2 frames
-    myGame.CurrentSprite("shoot",false,dt)
     
 end
 
 function shoot.draw()
-    if (shoot.type == "fire") then 
-        --affichage du ciblage-
-        myGame.DrawSprite("targetF",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy)
-    elseif (shoot.type == "ice") then
-        --affichage du ciblage-
-        myGame.DrawSprite("targetI",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy)
+    if myHero.shoot then
+        if (shoot.type == "fire") then 
+            --affichage du ciblage-
+            myGame.DrawSprite("targetF",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy)
+        elseif (shoot.type == "ice") then
+            --affichage du ciblage-
+            myGame.DrawSprite("targetI",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy)
+        end
+
+            --affichage du shoot
+        for i = 1, #shoot.shoot do
+            myGame.DrawSprite(shoot.shoot[i].type,shoot.shoot[i].x,shoot.shoot[i].y,shoot.shoot[i].angle,1.5,shoot.ox - 35,shoot.oy)
+        end
     end
     
-    --affichage du shoot
-    for i = 1, #shoot.shoot do
-        myGame.DrawSprite(shoot.shoot[i].type,shoot.shoot[i].x,shoot.shoot[i].y,shoot.shoot[i].angle,1.5,shoot.ox - 35,shoot.oy)
-    end
-
+    
 end
 
 function shoot.aim(pX,pY)

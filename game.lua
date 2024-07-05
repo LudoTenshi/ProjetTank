@@ -3,6 +3,8 @@ local game = {}
 game.quadList = {}
 game.StriteList = {}
 
+game.language = "fr"
+
 game.dtSpeed = 5
 
 game.ESTATES = {
@@ -12,7 +14,7 @@ game.ESTATES = {
     BITE = "bite",
     CHANGEDIR = "change"
 }
-
+game.cursor = {}
 game.DIRECTION = {
     "x",
     "y",
@@ -103,6 +105,10 @@ function game.CurrentSprite(psName,pbSprite,dt)
             end
         end
     end
+end
+
+function game.createCursor()
+    game.cursor = love.mouse.newCursor("/images/cursor2.png",0,0)
 end
 
 return game

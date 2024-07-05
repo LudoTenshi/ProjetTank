@@ -9,41 +9,52 @@ io.stdout:setvbuf('no')
 -- Indispensable pour du pixel art
 love.graphics.setDefaultFilter("nearest")
 
+require("extension")
+
+mySceneManager = require("sceneManager")
+mySound = require("sound")
+myTranslation = require("translation")
+myMapManager = require("mapManager")
 myGame = require("game")
+myDialogueManager = require("dialogueManager")
 myHero = require("hero")
 myEnnemy = require("ennemy")
+myIntro = require("intro")
 --myMap = require("map1")
 myInterface = require("interface")
 
 function love.load()
 
-    love.window.setMode(1920,1056)
+    love.window.setMode(1920,1080)
 
     screenWidth = love.graphics:getWidth()
     screenHeight = love.graphics:getHeight()
-
+    myGame.createCursor()
+    mySound.load()
+    myIntro.load()
     myHero.load()
-
     myEnnemy.load()
+    myMapManager.load()
+    myDialogueManager.load()
+    --myEnnemy.createEnnemy()
+    myInterface.load()
 
-    myEnnemy.createEnnemy()
 end
 
 function love.update(dt)
-    myHero.update(dt)
-    myEnnemy.update(dt)
+    
+    mySceneManager.update(dt)
 end
 
 function love.draw()
     
-    myInterface.draw()
-    myHero.draw()
-    myEnnemy.draw()
+    mySceneManager.draw()
+ 
     
 end
 
 function love.keypressed(key)
-    myHero.keypressed(key)
+    mySceneManager.keypressed(key)
 end
 
 function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end

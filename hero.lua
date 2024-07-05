@@ -11,6 +11,12 @@ hero.ox = hero.TILE_HEIGHT * 0.5
 hero.oy = hero.TILE_WIDTH * 0.5
 hero.direction = nil
 
+hero.lifeMax = 100
+hero.life = 100
+hero.level = 1
+
+hero.shoot = false
+
 myShoot = require("shoot")
 
 function hero.load()
@@ -34,23 +40,24 @@ function hero.update(dt)
     
     myGame.CurrentSprite("hero",false,dt)
 
-
-    if love.keyboard.isDown("d") then 
-        hero.x = hero.x + 1 * dt * hero.movespeed
-        hero.direction = "right"
-    elseif love.keyboard.isDown("q") then
-        hero.x = hero.x - 1 * dt * hero.movespeed
-        hero.direction = "left"
-    elseif love.keyboard.isDown("s") then 
-        hero.y = hero.y + 1 * dt * hero.movespeed
-        hero.direction = "bottom"
-    elseif love.keyboard.isDown("z") then
-        hero.y = hero.y - 1 * dt * hero.movespeed
-        hero.direction = "top"
-    else 
-        hero.direction = nil
+    if myInterface.estDialogue == false then
+        if love.keyboard.isDown("d") then 
+            hero.x = hero.x + 1 * dt * hero.movespeed
+            hero.direction = "right"
+        elseif love.keyboard.isDown("q") then
+            hero.x = hero.x - 1 * dt * hero.movespeed
+            hero.direction = "left"
+        elseif love.keyboard.isDown("s") then 
+            hero.y = hero.y + 1 * dt * hero.movespeed
+            hero.direction = "bottom"
+        elseif love.keyboard.isDown("z") then
+            hero.y = hero.y - 1 * dt * hero.movespeed
+            hero.direction = "top"
+        else 
+            hero.direction = nil
+        end
     end
-    
+
     myShoot.update(dt,hero)
 
 end 
