@@ -65,11 +65,11 @@ end
 function intro.keypressed(key)
     if key == "down" then
         intro.languageDefault = intro.languageDefault + 1
-        mySound.playEffect("cursor-move.wav")
+        mySound.playEffect("cursor-move")
     end
     if key == "up" then
         intro.languageDefault = intro.languageDefault - 1
-        mySound.playEffect("cursor-move.wav")
+        mySound.playEffect("cursor-move")
     end
     if intro.languageDefault > #intro.imgLanguage then
         intro.languageDefault = #intro.imgLanguage

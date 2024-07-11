@@ -4,10 +4,12 @@ dialogueManager.lstDialogue = {}
 dialogueManager.dialActif = {}
 -- index du dialogue en cours
 dialogueManager.indexDial = nil
--- Scene de dialogue a afficher 
+-- Scene de dialogue a afficher == "Dialogue" + i 
 dialogueManager.sceneDial = 1
 -- Fin du dialogue == true 
 dialogueManager.endDial = false
+-- savoir si le dialogue viens d'un evenement
+dialogueManager.estEvenement = false
 
 function dialogueManager.load()
     dialogueManager.initDial()
@@ -18,14 +20,24 @@ function dialogueManager.update(dt)
         if dialogueManager.indexDial == nil then
             dialogueManager.indexDial = 1
         end
-        dialogueManager.sceneDial = 1
         dialogueManager.executeDial(dt)
+        if dialogueManager.endDial == true then
+            myInterface.estDialogue = false
+            if dialogueManager.estEvenement == true then
+                dialogueManager.estEvenement = false 
+                myEvenement.current = false
+            end
+        end
     end
 end
 
 function dialogueManager.draw()
     --love.graphics.print("index : " .. dialogueManager.dialActif.text:getWidth(),400,1)
-    myInterface.drawMapping(dialogueManager.dialActif)
+    if dialogueManager.endDial == false then 
+        myInterface.drawMapping(dialogueManager.dialActif)
+    else
+        myInterface.estDialogue = true
+    end
 end
 
 function dialogueManager.executeDial(dt)
@@ -62,6 +74,8 @@ function dialogueManager.keypressed(key)
         dialogueManager.indexDial = dialogueManager.indexDial + 1
         if dialogueManager.indexDial > #dialogueManager.lstDialogue[dialogueManager.sceneDial].lstDial then
             dialogueManager.endDial = true
+        else
+            myInterface.estDialogue = true
         end
     end 
 end

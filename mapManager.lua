@@ -7,6 +7,7 @@ mapManager.Map = {}
 mapManager.path = "/map/"
 
 mapManager.TileSheet = {}
+mapManager.Grid = {}
 
 
 function mapManager.load()
@@ -27,12 +28,19 @@ function mapManager.load()
     end
 
     for index, pMap in ipairs(mapManager.Map) do
+      if pMap.data.class == "map" then
         mapManager.LoadMap(pMap)
+      end
     end
 end
 
-function mapManager.draw()
-    mapManager.drawMAP(mapManager.Map[1],"map1")
+function mapManager.draw(pName)
+  for index , pMap in ipairs(mapManager.Map) do
+    if pMap.name == pName then
+      mapManager.drawMAP(pMap,pName)
+      return
+    end
+  end
 end
 
 function mapManager.LoadMap(pFile)
@@ -71,7 +79,9 @@ end
 
 function mapManager.drawMAP(pMap,pName)
     local c,l
+    mapManager.Grid = {}
      for line = 1, #pMap.data.layers do
+      mapManager.Grid[line] = {{}}
       if pMap.data.layers[line].type == "tilelayer" then
       local id = 0
       l=1
@@ -80,10 +90,12 @@ function mapManager.drawMAP(pMap,pName)
         if c > l*pMap.data.layers[line].width then
          l = l+1
          column = 1
+         mapManager.Grid[line][l] = {}
          else
            column = column +1
        end
        id = pMap.data.layers[line].data[c]
+       mapManager.Grid[line][l][column] = id
        local texQuad = nil
        for index, tilesheet in ipairs(mapManager.TileSheet) do
         if(tilesheet.name == pName) then
@@ -98,7 +110,47 @@ function mapManager.drawMAP(pMap,pName)
        end
      end
     end
-  end
+   end
   end
 
+function mapManager.collision(pX,pY,oX,oY)
+    local c = math.floor(pX / mapManager.TileWIDHT) + 1
+    local l = math.floor(pY / mapManager.TileHEIGHT) + 1
+    local pTId
+    if #mapManager.Grid ~= 0 then
+      for iGrid , pGrid in ipairs(mapManager.Grid) do
+        pTId = pGrid[l][c]
+        for index, pMap in ipairs(mapManager.Map) do
+          if pMap.data.class == "Tuile" then
+            for iTil, pTil in ipairs(pMap.data.tiles) do
+              if (pTil.id + 1) == pTId then
+                for oi , obj in ipairs(pTil.objectGroup.objects) do
+                  if obj.shape == "rectangle" then
+                    local dx = (c-1) * mapManager.TileWIDHT + obj.x
+                    local fx = dx + obj.width
+                    local dy = (l-1) * mapManager.TileHEIGHT + obj.y
+                    local fy = dy + obj.height
+                    local hdx = pX - oX
+                    local hfx = pX + oX
+                    local hdy = pY
+                    local hfy = pY + oY
+                    if (hdx > dx or hfx > dx) and  ( hdx < fx or hfx < fx) and
+                        (hdy > dy or hfy > dy) and ( hdy < fy or hfy < fy) 
+                    then
+                      return true
+                    end
+                  elseif obj.shape == "polygon" then
+                    for ipol, pol in ipairs(obj.shape.polygon) do
+                      --a voir plus tard
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    return false
+  end
 return mapManager

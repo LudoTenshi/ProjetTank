@@ -22,6 +22,8 @@ game.DIRECTION = {
     "-y"
 }
 
+game.transitionOpac = 0
+
 function game.CreateQuad(psName,psImageSheet,psHeightImg,psWidthImg)
     local quad = {}
 
@@ -65,7 +67,7 @@ end
 
 function game.CreateSprite(psNameQuad,psNameSprite,pnStart,pnEnd)
     local sprite =  {}
-    local i
+
     for i, quad in ipairs(game.quadList) do
         if quad.name == psNameQuad then
             sprite.name = psNameSprite
@@ -85,7 +87,7 @@ function game.CreateSprite(psNameQuad,psNameSprite,pnStart,pnEnd)
 end
 
 function game.DrawSprite(psNameSprite,pX,pY,pAngle,pnScale,pOx,pOy)
-    local i 
+
     for i, sprite in ipairs(game.StriteList) do 
         if sprite.name == psNameSprite and #sprite.list ~= 0 then
             love.graphics.draw(sprite.tileSheet,sprite.list[math.floor(sprite.currentImg)],pX,pY,pAngle,pnScale,pnScale,pOx,pOy)
@@ -109,6 +111,29 @@ end
 
 function game.createCursor()
     game.cursor = love.mouse.newCursor("/images/cursor2.png",0,0)
+end
+
+function game.transitionUpdate(dt)
+
+    if game.transitionOpac < 1 and mySceneManager.preScene ~= "transition" then
+        game.transitionOpac = game.transitionOpac + dt
+        if game.transitionOpac >= 1 then
+            mySceneManager.preScene = mySceneManager.scene 
+            mySceneManager.scene = mySceneManager.secScene
+            game.transitionOpac = 1
+        end
+    else
+        game.transitionOpac = game.transitionOpac - dt
+        if game.transitionOpac <= 0 then
+            mySceneManager.preScene = "transitionEnd"
+        end
+    end
+end
+
+function game.transitionDraw()
+    love.graphics.setColor(255, 255, 255, game.transitionOpac)
+    love.graphics.rectangle("fill",0,0,screenWidth,screenHeight)
+    love.graphics.setColor(255, 255, 255,1)
 end
 
 return game

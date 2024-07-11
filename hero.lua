@@ -21,8 +21,8 @@ myShoot = require("shoot")
 
 function hero.load()
 
-    hero.x = love.graphics.getWidth() * 0.5 * 0.5
-    hero.y = love.graphics.getHeight() * 0.5
+    hero.x = 15 * myMapManager.TileWIDHT
+    hero.y = 11 * myMapManager.TileHEIGHT
 
     myGame.CreateQuad("hero","hero",hero.TILE_HEIGHT,hero.TILE_HEIGHT)
 
@@ -44,20 +44,35 @@ function hero.update(dt)
         if love.keyboard.isDown("d") then 
             hero.x = hero.x + 1 * dt * hero.movespeed
             hero.direction = "right"
+            if myMapManager.collision(hero.x,hero.y,hero.ox - (hero.ox * 0.5),hero.oy) then
+                hero.x = hero.x - 1 * dt * hero.movespeed
+            end
         elseif love.keyboard.isDown("q") then
             hero.x = hero.x - 1 * dt * hero.movespeed
             hero.direction = "left"
+            if myMapManager.collision(hero.x,hero.y,hero.ox - (hero.ox * 0.5),hero.oy) then
+                hero.x = hero.x + 1 * dt * hero.movespeed
+            end
         elseif love.keyboard.isDown("s") then 
             hero.y = hero.y + 1 * dt * hero.movespeed
             hero.direction = "bottom"
+            if myMapManager.collision(hero.x,hero.y,hero.ox - (hero.ox * 0.5),hero.oy) then
+                hero.y = hero.y - 1 * dt * hero.movespeed
+            end
         elseif love.keyboard.isDown("z") then
             hero.y = hero.y - 1 * dt * hero.movespeed
             hero.direction = "top"
+            if myMapManager.collision(hero.x,hero.y,hero.ox - (hero.ox * 0.5),hero.oy) then
+                hero.y = hero.y + 1 * dt * hero.movespeed
+            end
         else 
             hero.direction = nil
         end
+       
+        myEvenement.estEve(mySceneManager.map,hero.x,hero.y)
+        
     end
-
+    
     myShoot.update(dt,hero)
 
 end 

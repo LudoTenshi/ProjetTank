@@ -9,6 +9,12 @@ io.stdout:setvbuf('no')
 -- Indispensable pour du pixel art
 love.graphics.setDefaultFilter("nearest")
 
+
+love.window.setMode(1920,1080)
+
+screenWidth = love.graphics:getWidth()
+screenHeight = love.graphics:getHeight()
+
 require("extension")
 
 mySceneManager = require("sceneManager")
@@ -20,15 +26,12 @@ myDialogueManager = require("dialogueManager")
 myHero = require("hero")
 myEnnemy = require("ennemy")
 myIntro = require("intro")
---myMap = require("map1")
 myInterface = require("interface")
+myEvenement = require("evenement")
 
+local mouseX,mouseY 
 function love.load()
 
-    love.window.setMode(1920,1080)
-
-    screenWidth = love.graphics:getWidth()
-    screenHeight = love.graphics:getHeight()
     myGame.createCursor()
     mySound.load()
     myIntro.load()
@@ -44,13 +47,15 @@ end
 function love.update(dt)
     
     mySceneManager.update(dt)
+
+    mouseX,mouseY  = love.mouse.getPosition()
 end
 
 function love.draw()
     
     mySceneManager.draw()
  
-    
+    love.graphics.print("x : " .. tostring(mouseX) .. " y : " .. mouseY,1,1)
 end
 
 function love.keypressed(key)

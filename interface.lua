@@ -23,6 +23,9 @@ interface.dtCol  = 2
 
 interface.margeTop = 200
 
+interface.damageLst = {}
+interface.damagedtSpeed = 5
+
 function interface.load()
     
 end
@@ -36,11 +39,22 @@ function interface.update(dt)
         }
         interface.infoHero = interface.createMapAndText(6,13,listText,interface.imgHeight * 0.5,interface.imgWidth * 0.5)
     end
-    
+    for index, damage in ipairs(interface.damageLst) do
+       damage.y = damage.y - dt * interface.damagedtSpeed
+       damage.opacity = damage.opacity - dt * interface.damagedtSpeed * 25
+    end
 end
 
 function interface.draw()
     interface.drawMapping(interface.infoHero)
+
+    for index, damage in ipairs(interface.damageLst) do
+        local text = love.graphics.newText(interface.textFond)
+        local R,G,B,A = love.math.colorFromBytes(damage.R,damage.G,damage.B,damage.opacity)
+        text:add({{R,G,B,A},damage.text})
+        
+        love.graphics.draw(text,damage.x,damage.y,0,2,2)
+    end
 end
 
 function interface.drawMapping(pMapping)
@@ -72,7 +86,7 @@ function interface.drawMapping(pMapping)
 end
 
 function interface.createMapAndText(pLine,pColumn,pText,pX,pY)
-    local space
+    
     local mapping = { 
         col = pColumn,
         line = pLine,
@@ -126,7 +140,6 @@ function interface.DialAnimation(pText,dt,pEstHero)
             pLine = pLine + 1
         end
     end
-    print(interface.dtCol)
     --test si c'est le hero qui parle ou pnj
     if pEstHero == true then
         pX = myHero.x
@@ -142,7 +155,7 @@ function interface.DialAnimation(pText,dt,pEstHero)
             interface.dtLine = interface.dtLine + 20 * dt
         end
         if(interface.dtCol <= pColumn ) then
-            interface.dtCol = interface.dtCol + 20 * dt 
+            interface.dtCol = interface.dtCol + 80 * dt 
         end
         if (interface.dtLine >= pLine) and (interface.dtCol >= pColumn)then
             AnimationD = interface.createMapAndText(pLine,pColumn,pText,pX,pY)
@@ -160,6 +173,26 @@ function interface.DialAnimation(pText,dt,pEstHero)
     
     return AnimationD
     
+end
+
+function interface.animationDamage(pText,pSprite,estPlayer)
+    local damage = {
+        x = pSprite.x - pSprite.ox,
+        y = pSprite.y - pSprite.oy * 2,
+        text = pText,
+        opacity = 255
+    }
+    if estPlayer == true then
+        if myShoot.type == "fire"  then
+            damage.R,damage.G,damage.B = 255, 153, 10
+        else
+            damage.R,damage.G,damage.B = 51, 204, 204
+        end
+    else
+        damage.R,damage.G,damage.B = 255, 10, 10
+    end
+
+    table.insert(interface.damageLst,damage)
 end
 
 return interface

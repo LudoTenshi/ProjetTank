@@ -5,9 +5,9 @@ shoot.tileSheet = love.graphics.newImage("images/heroshoot.png")
 shoot.tileTexture = {}
 shoot.TILE_WIDTH = 48
 shoot.TILE_HEIGHT = 48
-shoot.shootDelay = 1
+shoot.shootDelay = 1.4
 shoot.shootDelayNow = 0
-shoot.shoot = {}
+shoot.lstShoot = {}
 shoot.shootpseed = 1
 shoot.imgCurrentShoot = 2
 shoot.x = 0
@@ -38,21 +38,37 @@ function shoot.update(dt,hero)
         shoot.aim(mouseX,mouseY)
     
         shoot.shootDelayNow = shoot.shootDelayNow + dt
-    
+        
+        -- Clique gauche souris
         if love.mouse.isDown(1) and shoot.shootDelayNow > shoot.shootDelay then
             shoot.shootval(shoot.fireAngle,shoot.x,shoot.y,dt)
+            if shoot.type == "fire" then
+                mySound.playEffect("009")
+            else
+                mySound.playEffect("022")
+            end
             shoot.shootDelayNow = 0
         end
     
         --shoot 
-        for i, myShoot in ipairs(shoot.shoot) do
+        for i, myShoot in ipairs(shoot.lstShoot) do
             myShoot.velo = myShoot.velo + dt * 1.5
             myShoot.x = myShoot.x + shoot.shootpseed * math.cos(myShoot.angle) * myShoot.velo
             myShoot.y = myShoot.y + shoot.shootpseed * math.sin(myShoot.angle) * myShoot.velo
     
-            if math.dist(myShoot.xInit,myShoot.yInit,myShoot.x,myShoot.y) > shoot.distance then 
-                table.remove(shoot.shoot,i)
+            if shoot.damageEnn(myShoot) then
+                if myShoot.type == "fire" then
+                    mySound.playEffect("019")
+                    table.remove(shoot.lstShoot,i)
+                else
+                    mySound.playEffect("317")
+                end
             end
+
+            if math.dist(myShoot.xInit,myShoot.yInit,myShoot.x,myShoot.y) > shoot.distance then 
+                table.remove(shoot.lstShoot,i)
+            end
+
         end
     
         --affichage du shoot sur 2 frames
@@ -72,8 +88,8 @@ function shoot.draw()
         end
 
             --affichage du shoot
-        for i = 1, #shoot.shoot do
-            myGame.DrawSprite(shoot.shoot[i].type,shoot.shoot[i].x,shoot.shoot[i].y,shoot.shoot[i].angle,1.5,shoot.ox - 35,shoot.oy)
+        for i = 1, #shoot.lstShoot do
+            myGame.DrawSprite(shoot.lstShoot[i].type,shoot.lstShoot[i].x,shoot.lstShoot[i].y,shoot.lstShoot[i].angle,1.5,shoot.ox - 35,shoot.oy)
         end
     end
     
@@ -86,16 +102,23 @@ end
 
 function shoot.shootval(pAngle,pX,pY,dt)
     
-    local Id = #shoot.shoot + 1
-    local shootVal = {}
-    shootVal.x = pX
-    shootVal.y = pY
-    shootVal.xInit = pX
-    shootVal.yInit = pY
-    shootVal.angle = pAngle
-    shootVal.velo = 2 * dt
-    shootVal.type = shoot.type
-    shoot.shoot[Id] = shootVal
+    local shootVal = {
+        x = pX,
+        y = pY,
+        ox = shoot.ox,
+        oy = shoot.oy,
+        xInit = pX,
+        yInit = pY,
+        angle = pAngle,
+        velo = 2 * dt,
+        type = shoot.type
+    }
+    if shoot.type == "fire" then
+        shoot.damage = 10
+    else
+        shoot.damage = 5
+    end
+    table.insert(shoot.lstShoot,shootVal)
 
 end
 
@@ -107,6 +130,25 @@ function shoot.keypressed(key)
             shoot.type = "fire"
         end
     end
+end
+
+function shoot.damageEnn(pShoot)
+    local sdx = pShoot.x - pShoot.ox
+    local sfx = pShoot.x + pShoot.ox
+    local sdy = pShoot.y + pShoot.oy
+    local sfy = pShoot.y + pShoot.oy
+    for index, pEnn in ipairs(myEnnemy.list) do
+        local dx = pEnn.x - pEnn.ox
+        local fx = pEnn.x + pEnn.ox
+        local dy = pEnn.y - pEnn.oy
+        local fy = pEnn.y + pEnn.oy
+        if (sdx > dx or sfx > dx) and ( sdx > fx or sfx > fx)
+        and (sdy > dy or sfy > dy) and (sdy > fy or sfy > fy) then
+            myEnnemy.damageIn(pShoot.damage,pEnn)
+            return true
+        end
+    end
+    return false
 end
 
 return shoot

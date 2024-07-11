@@ -14,7 +14,7 @@ function sound.load()
         effect = {}
         fileInfo = love.filesystem.getInfo(sound.path .. file[i])
         if(fileInfo.type == "file") then
-            effect.name = file[i]
+            effect.name = file[i]:explode("%.")[1]
             effect.sound = love.audio.newSource(sound.path .. file[i], "static")
         end
        table.insert(sound.Listeffect,effect)
