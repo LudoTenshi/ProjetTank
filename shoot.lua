@@ -16,6 +16,7 @@ shoot.ox = 0
 shoot.oy = 0
 shoot.type = "fire"
 shoot.distance = 400
+shoot.id = 0
 
 function shoot.load()
     myGame.CreateQuad("shoot","heroshoot",shoot.TILE_HEIGHT,shoot.TILE_HEIGHT)
@@ -81,15 +82,15 @@ function shoot.draw()
     if myHero.shoot then
         if (shoot.type == "fire") then 
             --affichage du ciblage-
-            myGame.DrawSprite("targetF",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy)
+            myGame.DrawSprite("targetF",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy,0)
         elseif (shoot.type == "ice") then
             --affichage du ciblage-
-            myGame.DrawSprite("targetI",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy)
+            myGame.DrawSprite("targetI",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy,0)
         end
 
             --affichage du shoot
         for i = 1, #shoot.lstShoot do
-            myGame.DrawSprite(shoot.lstShoot[i].type,shoot.lstShoot[i].x,shoot.lstShoot[i].y,shoot.lstShoot[i].angle,1.5,shoot.ox - 35,shoot.oy)
+            myGame.DrawSprite(shoot.lstShoot[i].type,shoot.lstShoot[i].x,shoot.lstShoot[i].y,shoot.lstShoot[i].angle,1.5,shoot.ox - 35,shoot.oy,0)
         end
     end
     
@@ -101,8 +102,9 @@ function shoot.aim(pX,pY)
 end
 
 function shoot.shootval(pAngle,pX,pY,dt)
-    
+    shoot.id = shoot.id + 1
     local shootVal = {
+        id = shoot.id,
         x = pX,
         y = pY,
         ox = shoot.ox,
@@ -111,12 +113,12 @@ function shoot.shootval(pAngle,pX,pY,dt)
         yInit = pY,
         angle = pAngle,
         velo = 2 * dt,
-        type = shoot.type
+        type = shoot.type,
     }
-    if shoot.type == "fire" then
-        shoot.damage = 10
+    if shootVal.type == "fire" then
+        shootVal.damage = 10
     else
-        shoot.damage = 5
+        shootVal.damage = 5
     end
     table.insert(shoot.lstShoot,shootVal)
 
@@ -138,14 +140,17 @@ function shoot.damageEnn(pShoot)
     local sdy = pShoot.y + pShoot.oy
     local sfy = pShoot.y + pShoot.oy
     for index, pEnn in ipairs(myEnnemy.list) do
-        local dx = pEnn.x - pEnn.ox
-        local fx = pEnn.x + pEnn.ox
-        local dy = pEnn.y - pEnn.oy
-        local fy = pEnn.y + pEnn.oy
-        if (sdx > dx or sfx > dx) and ( sdx > fx or sfx > fx)
-        and (sdy > dy or sfy > dy) and (sdy > fy or sfy > fy) then
-            myEnnemy.damageIn(pShoot.damage,pEnn)
-            return true
+        local dx = pEnn.x - myEnnemy.oX
+        local fx = pEnn.x + myEnnemy.oX
+        local dy = pEnn.y - myEnnemy.oY
+        local fy = pEnn.y + myEnnemy.oY
+        if (sdx > dx or sfx > dx) and ( sdx < fx or sfx < fx)
+        and (sdy > dy or sfy > dy) and (sdy < fy or sfy < fy) then
+            if pShoot.id ~= pEnn.IdDamage then
+                myEnnemy.damageIn(pShoot.damage,pEnn,pShoot.type)
+                pEnn.IdDamage = pShoot.id
+                return true
+            end
         end
     end
     return false

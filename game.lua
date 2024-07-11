@@ -12,7 +12,8 @@ game.ESTATES = {
     WALK = "walk",
     ATTACK = "attack",
     BITE = "bite",
-    CHANGEDIR = "change"
+    CHANGEDIR = "change",
+    DEAD = "dead"
 }
 game.cursor = {}
 game.DIRECTION = {
@@ -65,7 +66,10 @@ function game.CreateQuad(psName,psImageSheet,psHeightImg,psWidthImg)
     table.insert(game.quadList,quad)
 end
 
-function game.CreateSprite(psNameQuad,psNameSprite,pnStart,pnEnd)
+function game.CreateSprite(psNameQuad,psNameSprite,pnStart,pnEnd,pNoRepead)
+    if pNoRepead == nil then
+        pNoRepead = false
+    end
     local sprite =  {}
 
     for i, quad in ipairs(game.quadList) do
@@ -73,6 +77,7 @@ function game.CreateSprite(psNameQuad,psNameSprite,pnStart,pnEnd)
             sprite.name = psNameSprite
             sprite.quad = psNameQuad
             sprite.currentImg = 1
+            sprite.currentImgNorepeat = false
             sprite.tileSheet = quad.tileSheet
             sprite.list = {}
             local spriteid = 1
@@ -86,11 +91,15 @@ function game.CreateSprite(psNameQuad,psNameSprite,pnStart,pnEnd)
     end
 end
 
-function game.DrawSprite(psNameSprite,pX,pY,pAngle,pnScale,pOx,pOy)
+function game.DrawSprite(psNameSprite,pX,pY,pAngle,pnScale,pOx,pOy,pCurrentImg)
 
     for i, sprite in ipairs(game.StriteList) do 
         if sprite.name == psNameSprite and #sprite.list ~= 0 then
-            love.graphics.draw(sprite.tileSheet,sprite.list[math.floor(sprite.currentImg)],pX,pY,pAngle,pnScale,pnScale,pOx,pOy)
+            if pCurrentImg ~= 0 then
+                love.graphics.draw(sprite.tileSheet,sprite.list[math.floor(pCurrentImg)],pX,pY,pAngle,pnScale,pnScale,pOx,pOy)
+            else
+                love.graphics.draw(sprite.tileSheet,sprite.list[math.floor(sprite.currentImg)],pX,pY,pAngle,pnScale,pnScale,pOx,pOy)
+            end
         end
     end
 end
@@ -103,10 +112,24 @@ function game.CurrentSprite(psName,pbSprite,dt)
         if sprite.quad == psName and not pbSprite or sprite.name == psName and pbSprite then
             sprite.currentImg = sprite.currentImg + (game.dtSpeed * dt)
             if sprite.currentImg > #sprite.list + 1 then
-                sprite.currentImg = 1
+                if sprite.currentImgNorepeat == false then
+                    sprite.currentImg = 1
+                else
+                    sprite.currentImg = #sprite.list
+                end
+               
             end
         end
     end
+end
+
+function game.ReturnNbFrame(psName,pbSprite)
+    for i, sprite in ipairs(myGame.StriteList) do
+        if sprite.quad == psName and not pbSprite or sprite.name == psName and pbSprite then
+           return #sprite.list
+        end
+    end
+    return 1
 end
 
 function game.createCursor()

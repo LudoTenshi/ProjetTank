@@ -81,19 +81,19 @@ function hero.draw()
     --affichage du héro
     if hero.direction ~= nil then 
         if hero.direction == "right" then
-            myGame.DrawSprite("heroR",hero.x,hero.y,0,1,hero.ox,hero.oy)
+            myGame.DrawSprite("heroR",hero.x,hero.y,0,1,hero.ox,hero.oy,0)
         end
         if hero.direction == "left" then
-            myGame.DrawSprite("heroL",hero.x,hero.y,0,1,hero.ox,hero.oy)
+            myGame.DrawSprite("heroL",hero.x,hero.y,0,1,hero.ox,hero.oy,0)
         end
         if hero.direction == "bottom" then
-            myGame.DrawSprite("heroB",hero.x,hero.y,0,1,hero.ox,hero.oy)
+            myGame.DrawSprite("heroB",hero.x,hero.y,0,1,hero.ox,hero.oy,0)
         end
         if hero.direction == "top" then
-            myGame.DrawSprite("heroT",hero.x,hero.y,0,1,hero.ox,hero.oy)
+            myGame.DrawSprite("heroT",hero.x,hero.y,0,1,hero.ox,hero.oy,0)
         end
     else
-        myGame.DrawSprite("hero",hero.x,hero.y,0,1,hero.ox,hero.oy)
+        myGame.DrawSprite("hero",hero.x,hero.y,0,1,hero.ox,hero.oy,0)
     end
     
     myShoot.draw()

@@ -59,7 +59,8 @@ function intro.draw()
                         0,
                         0.5,
                         intro.cursorW * 0.5,
-                        intro.cursorH *0.5)
+                        intro.cursorH *0.5,
+                        0)
 end
 
 function intro.keypressed(key)
