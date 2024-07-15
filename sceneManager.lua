@@ -20,6 +20,9 @@ function sceneManager.update(dt)
         myInterface.update(dt)
         
     end
+    if sceneManager.scene == "gameOver" then
+        myInterface.update(dt)
+    end
     if mySceneManager.preScene == "transitionEnd" then
         sceneManager.noAction = false
     end
@@ -37,7 +40,13 @@ function sceneManager.draw()
         myDialogueManager.draw()
         myEnnemy.draw()
     end
-
+    if sceneManager.scene == "gameOver" then
+        myMapManager.draw(sceneManager.map)
+        myHero.draw()
+        myEnnemy.draw()
+        myDialogueManager.draw()
+        myInterface.draw()
+    end
     if sceneManager.scene == "transition" or sceneManager.preScene == "transition" then
         myGame.transitionDraw()
     end
@@ -66,9 +75,18 @@ function sceneManager.keypressed(key)
             end
         end
     end
-   
-    
 end
 
+function sceneManager.mousemoved(mx,my,mdx,mdy,mistouch)
+    if sceneManager.scene == "intro"then 
+        myIntro.mousemoved(mx,my,mdx,mdy,mistouch)
+    end
+end
+
+function sceneManager.mousepressed(mx,my,mbutton)
+    if mbutton == 1 and (myDialogueManager.endDial == false or sceneManager.scene == "intro") then
+        sceneManager.keypressed("space")
+    end
+end
 
 return sceneManager

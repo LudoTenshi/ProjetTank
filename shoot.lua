@@ -8,7 +8,7 @@ shoot.TILE_HEIGHT = 48
 shoot.shootDelay = 1.4
 shoot.shootDelayNow = 0
 shoot.lstShoot = {}
-shoot.shootpseed = 1
+shoot.shootpseed = 1.2
 shoot.imgCurrentShoot = 2
 shoot.x = 0
 shoot.y = 0
@@ -53,7 +53,7 @@ function shoot.update(dt,hero)
     
         --shoot 
         for i, myShoot in ipairs(shoot.lstShoot) do
-            myShoot.velo = myShoot.velo + dt * 1.5
+            myShoot.velo = myShoot.velo + dt * 1.75
             myShoot.x = myShoot.x + shoot.shootpseed * math.cos(myShoot.angle) * myShoot.velo
             myShoot.y = myShoot.y + shoot.shootpseed * math.sin(myShoot.angle) * myShoot.velo
     
@@ -86,11 +86,12 @@ function shoot.draw()
         elseif (shoot.type == "ice") then
             --affichage du ciblage-
             myGame.DrawSprite("targetI",shoot.x,shoot.y,shoot.fireAngle,1.2,shoot.ox - 35,shoot.oy,0)
+            
         end
 
             --affichage du shoot
         for i = 1, #shoot.lstShoot do
-            myGame.DrawSprite(shoot.lstShoot[i].type,shoot.lstShoot[i].x,shoot.lstShoot[i].y,shoot.lstShoot[i].angle,1.5,shoot.ox - 35,shoot.oy,0)
+            myGame.DrawSprite(shoot.lstShoot[i].type,shoot.lstShoot[i].x,shoot.lstShoot[i].y,shoot.lstShoot[i].angle,1.5,shoot.ox - 30,shoot.oy,0)
         end
     end
     
@@ -135,8 +136,8 @@ function shoot.keypressed(key)
 end
 
 function shoot.damageEnn(pShoot)
-    local sdx = pShoot.x - pShoot.ox
-    local sfx = pShoot.x + pShoot.ox
+    local sdx = pShoot.x - pShoot.ox - 35 * 1.5
+    local sfx = pShoot.x + pShoot.ox - 35 * 1.5
     local sdy = pShoot.y + pShoot.oy
     local sfy = pShoot.y + pShoot.oy
     for index, pEnn in ipairs(myEnnemy.list) do
@@ -148,6 +149,7 @@ function shoot.damageEnn(pShoot)
         and (sdy > dy or sfy > dy) and (sdy < fy or sfy < fy) then
             if pShoot.id ~= pEnn.IdDamage then
                 myEnnemy.damageIn(pShoot.damage,pEnn,pShoot.type)
+                myInterface.animationDamage("-" .. pShoot.damage,pEnn,true)
                 pEnn.IdDamage = pShoot.id
                 return true
             end

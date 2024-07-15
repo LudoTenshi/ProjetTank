@@ -20,7 +20,7 @@ intro.languageDefault = 1
 intro.cursorW = 128
 intro.cursorH = 71
 intro.marginWidth = 300
-
+love.graphics.setFont (love.graphics.newFont (30))
 intro.textFont = love.graphics.getFont()
 intro.text = love.graphics.newText(intro.textFont)
 
@@ -45,7 +45,7 @@ end
 function intro.draw()
     love.graphics.draw(intro.imgFond,screenWidth * 0.5,0,0,0.5,0.5,intro.imgFond:getWidth() *0.5,0)
     love.graphics.draw(intro.textFond,screenWidth * 0.5,screenHeight -intro.textFond:getHeight() * 0.5 * 0.4,0,0.4,0.4,intro.textFond:getWidth() *0.5,intro.textFond:getHeight() *0.5)
-    love.graphics.draw(intro.text,10,50,0,3,3)
+    love.graphics.draw(intro.text,10,50,0,1,1)
     
     for index, img in ipairs(intro.imgLanguage) do
         img.x = intro.marginWidth
@@ -84,6 +84,27 @@ function intro.keypressed(key)
     end
     if(intro.languageDefault == 2 ) then
         myGame.language = "en"
+    end
+end
+
+function intro.mousepressed(px,py,pButton)
+
+end
+
+function intro.mousemoved(mx,my,mdx,mdy,mistouch)
+    for index, img in ipairs(intro.imgLanguage) do
+        local dx = img.x - img.img:getWidth() * 0.5
+        local dy = img.y - img.img:getHeight() * 0.5
+        local fx = img.x + img.img:getWidth() * 0.5
+        local fy = img.y + img.img:getHeight() * 0.5
+        if (mx > dx and mx < fx) and (my > dy and my < fy) then
+            if index < intro.languageDefault then
+                intro.keypressed("up")
+            end
+            if index > intro.languageDefault then
+                intro.keypressed("down")
+            end
+        end
     end
 end
 

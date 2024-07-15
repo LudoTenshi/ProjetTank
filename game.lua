@@ -154,9 +154,9 @@ function game.transitionUpdate(dt)
 end
 
 function game.transitionDraw()
-    love.graphics.setColor(255, 255, 255, game.transitionOpac)
+    love.graphics.setColor(1, 1, 1, game.transitionOpac)
     love.graphics.rectangle("fill",0,0,screenWidth,screenHeight)
-    love.graphics.setColor(255, 255, 255,1)
+    love.graphics.setColor(1, 1, 1,1)
 end
 
 return game

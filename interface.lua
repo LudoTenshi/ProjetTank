@@ -1,23 +1,24 @@
 local interface = {}
 
 interface.image = {
-    love.graphics.newImage("images/UI/HUD_Menus_HL.png"), --1
-    love.graphics.newImage("images/UI/HUD_Menus_H.png"), --2
-    love.graphics.newImage("images/UI/HUD_Menus_F.png") --3
+    hero = love.graphics.newImage("images/avatarhero.png"),
+    pnj1 = love.graphics.newImage("images/avatarpnj.png"),
 }
-interface.imgHeight = interface.image[1]:getHeight()
-interface.imgWidth = interface.image[1]:getWidth()
+interface.imgHeight = 48
+interface.imgWidth = 48
 
 interface.infoHero = {}
 --interface.textX = interface.x * 0.5
 --interface.textY = interface.y * 0.5
 interface.listMapping = {}
 
+love.graphics.setFont (love.graphics.newFont (30))
 interface.textFond = love.graphics.getFont()
 interface.text = love.graphics.newText(interface.textFond)
 
 interface.dialogue = {}
 interface.estDialogue = false
+interface.estAnimation = false
 interface.dtLine = 2
 interface.dtCol  = 2
 
@@ -26,8 +27,17 @@ interface.margeTop = 200
 interface.damageLst = {}
 interface.damagedtSpeed = 5
 
+interface.gameover = {
+    imgfond = love.graphics.newImage("images/UI/GAMEOVER.jpg"),
+    opacity = 0
+}
+
 function interface.load()
-    
+    myGame.CreateQuad("UIdial","UI/UIdial",interface.imgWidth,interface.imgHeight)
+
+    myGame.CreateSprite("UIdial","HUD1",1,1)
+    myGame.CreateSprite("UIdial","HUD2",2,2)
+    myGame.CreateSprite("UIdial","HUD3",3,3)
 end
 
 function interface.update(dt)
@@ -37,11 +47,17 @@ function interface.update(dt)
             {},
             {{2,2,2},myTranslation.returnLang(myGame.language,"level") .. " : " .. tostring(myHero.level)}
         }
-        interface.infoHero = interface.createMapAndText(6,13,listText,interface.imgHeight * 0.5,interface.imgWidth * 0.5)
+        interface.infoHero = interface.createMapAndText(6,13,listText,interface.imgHeight * 0.5,interface.imgWidth * 0.5,"")
     end
     for index, damage in ipairs(interface.damageLst) do
        damage.y = damage.y - dt * interface.damagedtSpeed
        damage.opacity = damage.opacity - dt * interface.damagedtSpeed * 25
+    end
+
+    if mySceneManager.scene == "gameOver" then
+        if interface.gameover.opacity < 0.80 then
+            interface.gameover.opacity = interface.gameover.opacity + dt * 0.5
+        end
     end
 end
 
@@ -53,13 +69,24 @@ function interface.draw()
         local R,G,B,A = love.math.colorFromBytes(damage.R,damage.G,damage.B,damage.opacity)
         text:add({{R,G,B,A},damage.text})
         
-        love.graphics.draw(text,damage.x,damage.y,0,2,2)
+        love.graphics.draw(text,damage.x,damage.y,0,1,1)
+    end
+
+    if mySceneManager.scene == "gameOver" then
+        love.graphics.setColor(1, 1, 1,interface.gameover.opacity * 0.5)
+        love.graphics.rectangle("fill",1,1,screenWidth,screenHeight)
+        love.graphics.setColor(1, 1, 1,interface.gameover.opacity)
+        love.graphics.draw(interface.gameover.imgfond,0,0)
+        --love.graphics.setColor(1, 1, 1,1)
     end
 end
 
 function interface.drawMapping(pMapping)
     local c,l
     local angle = 0
+    if pMapping.img ~= "" then
+        love.graphics.draw(pMapping.img,pMapping.mapX,pMapping.mapY - pMapping.img:getHeight(),0,1,1)
+    end
     if pMapping.line ~= nil then
         for l = 1,pMapping.line do
             for c = 1, pMapping.col  do
@@ -73,19 +100,24 @@ function interface.drawMapping(pMapping)
                 if l == pMapping.line and c ~= 1 then
                     angle = math.rad(180)
                 end
-                love.graphics.draw(interface.image[pMapping.map[l][c]],
-                                    pMapping.mapX + (c-1) * interface.imgWidth ,
-                                    pMapping.mapY + (l-1) * interface.imgHeight,
-                                    angle,1,1,interface.imgHeight * 0.5,
-                                    interface.imgWidth * 0.5)
+                --love.graphics.draw(interface.image[pMapping.map[l][c]],
+                                    --pMapping.mapX + (c-1) * interface.imgWidth ,
+                                    --pMapping.mapY + (l-1) * interface.imgHeight,
+                                    --angle,1,1,interface.imgHeight * 0.5,
+                                    --interface.imgWidth * 0.5)
+                myGame.DrawSprite("HUD" .. pMapping.map[l][c],
+                                    pMapping.mapX + (c-1) * interface.imgWidth * 0.5,
+                                    pMapping.mapY + (l-1) * interface.imgHeight * 0.5,
+                                    angle,0.5,interface.imgHeight * 0.5,
+                                    interface.imgWidth* 0.5,0)
             end
         end
     
-        love.graphics.draw(pMapping.text,pMapping.mapX,pMapping.mapY,0,2,2)
+        love.graphics.draw(pMapping.text,pMapping.mapX,pMapping.mapY,0,1,1)
     end
 end
 
-function interface.createMapAndText(pLine,pColumn,pText,pX,pY)
+function interface.createMapAndText(pLine,pColumn,pText,pX,pY,pImg)
     
     local mapping = { 
         col = pColumn,
@@ -93,7 +125,8 @@ function interface.createMapAndText(pLine,pColumn,pText,pX,pY)
         map = {},
         text = love.graphics.newText(interface.textFond),
         mapX = pX,
-        mapY = pY
+        mapY = pY,
+        img = pImg,
     }
 
     -- 1 = coin de l'interface
@@ -128,14 +161,14 @@ end
 
 function interface.DialAnimation(pText,dt,pEstHero)
     local AnimationD = {}
-    local pX,pY
+    local pX,pY,img
     local pLine,pColumn = 2,0
     --Calcul le nombre de ligne et collonne pour que le cadre prenne bien tout le texte
     for index , text in ipairs(pText) do
         local pTextExpl = text / "\n"
         for index , args in ipairs(pTextExpl) do
-            if pColumn < 2 + math.floor(string.len(args) / 2.25) then
-                pColumn = 2 + math.floor(string.len(args) / 2.25)
+            if pColumn < 1 + math.floor(string.len(args) / 1.40) then
+                pColumn = 1 + math.floor(string.len(args) / 1.40)
             end
             pLine = pLine + 1
         end
@@ -144,44 +177,60 @@ function interface.DialAnimation(pText,dt,pEstHero)
     if pEstHero == true then
         pX = myHero.x
         pY = myHero.y - pLine * (myHero.TILE_HEIGHT * 0.75)
+        img = interface.image.hero
     else
-        pX = screenWidth * 0.5 - pColumn * interface.imgWidth * 0.5
+        pX = screenWidth * 0.5 - pColumn * interface.imgWidth * 0.25
         pY = interface.margeTop
+        img = interface.image.pnj1
     end
 
-    if interface.estDialogue == false then
+    if interface.estAnimation == true then
         
         if(interface.dtLine <= pLine ) then
-            interface.dtLine = interface.dtLine + 20 * dt
+            interface.dtLine = interface.dtLine + 10 * pLine  * dt
         end
         if(interface.dtCol <= pColumn ) then
-            interface.dtCol = interface.dtCol + 80 * dt 
+            interface.dtCol = interface.dtCol +  dt * 10 * pColumn
         end
         if (interface.dtLine >= pLine) and (interface.dtCol >= pColumn)then
-            AnimationD = interface.createMapAndText(pLine,pColumn,pText,pX,pY)
-            interface.estDialogue = true
+            AnimationD = interface.createMapAndText(pLine,pColumn,pText,pX,pY,img)
             interface.dtLine = 2
-            interface.dtCol  = 2
+            interface.dtCol  = 0
+            interface.estAnimation = false
         else
-            AnimationD = interface.createMapAndText(math.floor(interface.dtLine),math.floor(interface.dtCol),{""},pX,pY)
+            AnimationD = interface.createMapAndText(math.floor(interface.dtLine),math.floor(interface.dtCol),{""},pX,pY,img)
         end
     else
-        AnimationD = interface.createMapAndText(pLine,pColumn,pText,pX,pY)
+        AnimationD = interface.createMapAndText(pLine,pColumn,pText,pX,pY,img)
         interface.dtLine = 2
-        interface.dtCol  = 2
+        interface.dtCol  = 0
+        interface.estAnimation = false
     end
     
+    interface.estDialogue = true
+
     return AnimationD
     
 end
 
 function interface.animationDamage(pText,pSprite,estPlayer)
-    local damage = {
-        x = pSprite.x - pSprite.ox,
-        y = pSprite.y - pSprite.oy * 2,
-        text = pText,
-        opacity = 255
-    }
+    local damage = {}
+    if estPlayer == false then 
+        damage = {
+            x = pSprite.x - pSprite.ox,
+            y = pSprite.y - pSprite.oy * 2,
+            text = pText,
+            opacity = 255
+        }
+    else
+        damage = {
+            x = pSprite.x ,
+            y = pSprite.y - myEnnemy.oY * 2,
+            text = pText,
+            opacity = 255
+        }
+    end
+    
     if estPlayer == true then
         if myShoot.type == "fire"  then
             damage.R,damage.G,damage.B = 255, 153, 10

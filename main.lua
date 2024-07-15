@@ -62,6 +62,15 @@ function love.keypressed(key)
     mySceneManager.keypressed(key)
 end
 
+function love.mousemoved(x,y,dx,dy,istouch)
+    mySceneManager.mousemoved(x,y,dx,dy,istouch)
+end
+
+function love.mousepressed(x,y,button)
+    mySceneManager.mousepressed(x,y,button)
+end
+
+
 function math.dist(x1,y1, x2,y2) return ((x2-x1)^2+(y2-y1)^2)^0.5 end
 
 function math.angle(x1,y1,x2,y2) return math.atan2(y2-y1,x2-x1) end

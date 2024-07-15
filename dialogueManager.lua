@@ -76,6 +76,7 @@ function dialogueManager.keypressed(key)
             dialogueManager.endDial = true
         else
             myInterface.estDialogue = true
+            myInterface.estAnimation = true
         end
     end 
 end

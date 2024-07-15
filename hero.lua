@@ -2,6 +2,10 @@ local hero = {}
 
 hero.TILE_HEIGHT = 48
 hero.TILE_WIDTH = 48
+hero.TILE_HEIGHT2 = 65
+hero.TILE_WIDTH2 = 55
+hero.TILE_HEIGHT3 = 64
+hero.TILE_WIDTH3 = 69
 hero.tileType = {}
 hero.x = 0
 hero.y = 0
@@ -14,7 +18,7 @@ hero.direction = nil
 hero.lifeMax = 100
 hero.life = 100
 hero.level = 1
-
+hero.dead = false
 hero.shoot = false
 
 myShoot = require("shoot")
@@ -25,6 +29,10 @@ function hero.load()
     hero.y = 11 * myMapManager.TileHEIGHT
 
     myGame.CreateQuad("hero","hero",hero.TILE_HEIGHT,hero.TILE_HEIGHT)
+    myGame.CreateQuad("hero2","hero2",hero.TILE_HEIGHT2,hero.TILE_WIDTH2)
+    myGame.CreateQuad("heroAtk","shotoATK",hero.TILE_HEIGHT3,hero.TILE_WIDTH3)
+    myGame.CreateSprite("heroAtk","heroAtk",1,9)
+    myGame.CreateSprite("hero2","hero2",6,9)
 
     myGame.CreateSprite("hero","hero",1,6)
     myGame.CreateSprite("hero","heroR",11,12)
@@ -39,8 +47,15 @@ function hero.update(dt)
 
     
     myGame.CurrentSprite("hero",false,dt)
+    myGame.CurrentSprite("hero2",false,dt)
+    myGame.CurrentSprite("heroAtk",false,dt)
 
-    if myInterface.estDialogue == false then
+    if hero.life <= 0 then
+        hero.dead = true
+        mySceneManager.scene = "gameOver"
+    end
+
+    if myInterface.estDialogue == false and hero.dead == false then
         if love.keyboard.isDown("d") then 
             hero.x = hero.x + 1 * dt * hero.movespeed
             hero.direction = "right"
@@ -93,7 +108,7 @@ function hero.draw()
             myGame.DrawSprite("heroT",hero.x,hero.y,0,1,hero.ox,hero.oy,0)
         end
     else
-        myGame.DrawSprite("hero",hero.x,hero.y,0,1,hero.ox,hero.oy,0)
+        myGame.DrawSprite("hero",hero.x,hero.y,0,1,hero.TILE_WIDTH3*0.5,hero.TILE_HEIGHT3*0.5,0)
     end
     
     myShoot.draw()
