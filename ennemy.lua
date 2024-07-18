@@ -115,28 +115,24 @@ function ennemy.walk(dt,pEnn)
         pEnn.type = ennemy.DIRECTION_SPRITE.SNAKER
         if pEnn.x >= pEnn.ox + pEnn.rx or myMapManager.collision(pEnn.x + pEnn.ox,pEnn.y,pEnn.ox,pEnn.oy) then
             pEnn.x = pEnn.x - dt * ennemy.dtSpeed
-            pEnn.direction = 3
         end
     elseif myGame.DIRECTION[pEnn.direction] == "-x" then
         pEnn.x = pEnn.x - dt * ennemy.dtSpeed
         pEnn.type = ennemy.DIRECTION_SPRITE.SNAKEL
         if pEnn.x <= pEnn.ox  or myMapManager.collision(pEnn.x - pEnn.ox,pEnn.y,pEnn.ox,pEnn.oy) then
             pEnn.x = pEnn.x + dt * ennemy.dtSpeed
-            pEnn.direction = 1
         end
     elseif myGame.DIRECTION[pEnn.direction] == "y" then
         pEnn.y = pEnn.y + dt * ennemy.dtSpeed
         pEnn.type = ennemy.DIRECTION_SPRITE.SNAKEB
         if pEnn.y >= pEnn.oy + pEnn.ry or myMapManager.collision(pEnn.x,pEnn.y + pEnn.oy,pEnn.ox,pEnn.oy) then
             pEnn.y = pEnn.y - dt * ennemy.dtSpeed
-            pEnn.direction = 4
         end
     elseif myGame.DIRECTION[pEnn.direction] == "-y" then
         pEnn.y = pEnn.y - dt * ennemy.dtSpeed
         pEnn.type = ennemy.DIRECTION_SPRITE.SNAKET
         if pEnn.y <= pEnn.oy or myMapManager.collision(pEnn.x,pEnn.y - pEnn.oy,pEnn.ox,pEnn.oy) then
             pEnn.y = pEnn.y + dt * ennemy.dtSpeed
-            pEnn.direction = 2
         end
     end
 
@@ -212,7 +208,6 @@ function ennemy.dead(dt,pEnn,pIndex)
     if pEnn.currentImg > myGame.ReturnNbFrame("ennemyko",false) then
         pEnn.currentImg = myGame.ReturnNbFrame("ennemyko",false)
     end
-    print(pEnn.currentImg)
     local angle = math.angle(pEnn.x,pEnn.y,myHero.x,myHero.y)
 
     if math.cos(angle) > 0 then

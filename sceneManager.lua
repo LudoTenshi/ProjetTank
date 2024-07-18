@@ -6,6 +6,8 @@ sceneManager.secScene = "intro"
 sceneManager.noAction = false
 sceneManager.map = "map1"
 
+sceneManager.gameOver = {}
+
 function sceneManager.update(dt)
     if sceneManager.scene == "transition" or sceneManager.preScene == "transition" then
         myGame.transitionUpdate(dt)
@@ -20,8 +22,14 @@ function sceneManager.update(dt)
         myInterface.update(dt)
         
     end
+    if sceneManager.scene == "victory" then
+        myDialogueManager.update(dt)
+        myInterface.update(dt)
+        sceneManager.gameOver = myInterface.DialAnimation({myTranslation.returnLang(myGame.language,"victory")[1].pnj},dt,false)
+    end
     if sceneManager.scene == "gameOver" then
         myInterface.update(dt)
+        sceneManager.gameOver = myInterface.DialAnimation({myTranslation.returnLang(myGame.language,"gameOver")[1].pnj},dt,false)
     end
     if mySceneManager.preScene == "transitionEnd" then
         sceneManager.noAction = false
@@ -46,6 +54,14 @@ function sceneManager.draw()
         myEnnemy.draw()
         myDialogueManager.draw()
         myInterface.draw()
+        myInterface.drawMapping(sceneManager.gameOver)
+    end
+    if sceneManager.scene == "victory" then
+        myMapManager.draw(sceneManager.map)
+        myHero.draw()
+        myInterface.draw()
+        myDialogueManager.draw()
+        myInterface.drawMapping(sceneManager.gameOver)
     end
     if sceneManager.scene == "transition" or sceneManager.preScene == "transition" then
         myGame.transitionDraw()
@@ -68,10 +84,22 @@ function sceneManager.keypressed(key)
                 sceneManager.scene = "transition"
                 sceneManager.noAction = true
                 sceneManager.secScene = "game1"
+                myDialogueManager.initDial()
                 myDialogueManager.sceneDial = 1
                 love.mouse.setCursor(myGame.cursor)
             else
                 myIntro.keypressed(key)
+            end
+        end
+
+        -- GameOver
+        if sceneManager.scene == "gameOver" or sceneManager.scene == "victory" then
+            if key == "space" then
+                sceneManager.preScene = "gameOver"
+                mySound.playEffect("001")
+                sceneManager.scene = "transition"
+                sceneManager.secScene = "intro"
+                myGame.newGame()
             end
         end
     end
@@ -84,7 +112,10 @@ function sceneManager.mousemoved(mx,my,mdx,mdy,mistouch)
 end
 
 function sceneManager.mousepressed(mx,my,mbutton)
-    if mbutton == 1 and (myDialogueManager.endDial == false or sceneManager.scene == "intro") then
+    if mbutton == 1 and (myDialogueManager.endDial == false 
+    or sceneManager.scene == "intro" 
+    or sceneManager.scene == "gameOver"
+    or sceneManager.scene == "victory") then
         sceneManager.keypressed("space")
     end
 end

@@ -2,7 +2,8 @@ local interface = {}
 
 interface.image = {
     hero = love.graphics.newImage("images/avatarhero.png"),
-    pnj1 = love.graphics.newImage("images/avatarpnj.png"),
+    Korisai = love.graphics.newImage("images/avatarpnj.png"),
+    Voice_World = love.graphics.newImage("images/VoiceWorld.png"),
 }
 interface.imgHeight = 48
 interface.imgWidth = 48
@@ -12,7 +13,7 @@ interface.infoHero = {}
 --interface.textY = interface.y * 0.5
 interface.listMapping = {}
 
-love.graphics.setFont (love.graphics.newFont (30))
+love.graphics.setFont (love.graphics.newFont (25))
 interface.textFond = love.graphics.getFont()
 interface.text = love.graphics.newText(interface.textFond)
 
@@ -163,12 +164,21 @@ function interface.DialAnimation(pText,dt,pEstHero)
     local AnimationD = {}
     local pX,pY,img
     local pLine,pColumn = 2,0
+    local sText = {}
     --Calcul le nombre de ligne et collonne pour que le cadre prenne bien tout le texte
     for index , text in ipairs(pText) do
-        local pTextExpl = text / "\n"
+        local pTextExpl 
+        if pEstHero == true then
+            pTextExpl = text / "\n"
+        else
+            pTextExpl = text.text / "\n"
+            img = interface.image[text.name]
+            table.insert(sText,text.text)
+        end
+        
         for index , args in ipairs(pTextExpl) do
-            if pColumn < 1 + math.floor(string.len(args) / 1.40) then
-                pColumn = 1 + math.floor(string.len(args) / 1.40)
+            if pColumn < 1 + math.floor(string.len(args) / 1.60) then
+                pColumn = 1 + math.floor(string.len(args) / 1.60)
             end
             pLine = pLine + 1
         end
@@ -178,10 +188,10 @@ function interface.DialAnimation(pText,dt,pEstHero)
         pX = myHero.x
         pY = myHero.y - pLine * (myHero.TILE_HEIGHT * 0.75)
         img = interface.image.hero
+        sText = pText
     else
         pX = screenWidth * 0.5 - pColumn * interface.imgWidth * 0.25
         pY = interface.margeTop
-        img = interface.image.pnj1
     end
 
     if interface.estAnimation == true then
@@ -193,7 +203,7 @@ function interface.DialAnimation(pText,dt,pEstHero)
             interface.dtCol = interface.dtCol +  dt * 10 * pColumn
         end
         if (interface.dtLine >= pLine) and (interface.dtCol >= pColumn)then
-            AnimationD = interface.createMapAndText(pLine,pColumn,pText,pX,pY,img)
+            AnimationD = interface.createMapAndText(pLine,pColumn,sText,pX,pY,img)
             interface.dtLine = 2
             interface.dtCol  = 0
             interface.estAnimation = false
@@ -201,7 +211,7 @@ function interface.DialAnimation(pText,dt,pEstHero)
             AnimationD = interface.createMapAndText(math.floor(interface.dtLine),math.floor(interface.dtCol),{""},pX,pY,img)
         end
     else
-        AnimationD = interface.createMapAndText(pLine,pColumn,pText,pX,pY,img)
+        AnimationD = interface.createMapAndText(pLine,pColumn,sText,pX,pY,img)
         interface.dtLine = 2
         interface.dtCol  = 0
         interface.estAnimation = false
@@ -218,7 +228,7 @@ function interface.animationDamage(pText,pSprite,estPlayer)
     if estPlayer == false then 
         damage = {
             x = pSprite.x - pSprite.ox,
-            y = pSprite.y - pSprite.oy * 2,
+            y = pSprite.y - pSprite.oy * 1.5,
             text = pText,
             opacity = 255
         }

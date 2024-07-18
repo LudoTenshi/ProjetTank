@@ -12,7 +12,7 @@ dialogueManager.endDial = false
 dialogueManager.estEvenement = false
 
 function dialogueManager.load()
-    dialogueManager.initDial()
+    
 end
 
 function dialogueManager.update(dt)

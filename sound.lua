@@ -26,6 +26,9 @@ end
 function sound.playEffect(pName)
     for index , pEffect in ipairs(sound.Listeffect) do
         if pEffect.name == pName then
+            if pEffect.sound:isPlaying() then
+                pEffect.sound:stop()
+              end
             pEffect.sound:play()
         end
     end

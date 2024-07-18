@@ -34,6 +34,26 @@ evenement.lst = {
         erepeat = true,
         estExe = false,
     },
+    {
+        idMap = "map2",
+        x = 0,
+        y = 0,
+        rX = screenWidth,
+        rY = screenHeight,
+        type = "function",
+        exe = function()
+            --print(#myEnnemy.list)
+            if #myEnnemy.list == 0 then
+                mySceneManager.preScene = "game1"
+                mySceneManager.scene = "transition"
+                mySceneManager.noAction = true
+                mySceneManager.secScene = "victory"
+            end
+            evenement.current = false
+        end,
+        erepeat = true,
+        estExe = false,
+    },
 }
 
 function evenement.estEve(pIdMap,pX,pY)
@@ -46,10 +66,14 @@ function evenement.estEve(pIdMap,pX,pY)
                 if pX > pEve.x and pX < rx and pY > pEve.y and pY < ry then
                     if pEve.estExe == false then
                         evenement.current = true
-                        evenement.executeEve(pEve)
-                    end
-                    if pEve.erepeat == false then
-                        pEve.estExe = true
+                        if type(pEve.exe) == "function" then
+                            pEve.exe()
+                        else
+                            evenement.executeEve(pEve)
+                        end
+                        if pEve.erepeat == false then
+                            pEve.estExe = true
+                        end
                     end
                 end
             end
@@ -72,13 +96,14 @@ function evenement.executeEve(pEvenement)
     elseif pEvenement.type == "map" then
         mySceneManager.map = pEvenement.type .. pEvenement.exe
         if pEvenement.exe == 2 then
-            myHero.x = myHero.ox
+            myHero.x = myHero.ox * 2 
             myHero.y = screenHeight * 0.5
             myEnnemy.createEnnemy(10,20 * myMapManager.TileWIDHT,
                                     1 * myMapManager.TileHEIGHT,
                                     screenWidth - myMapManager.TileWIDHT - 20 * myMapManager.TileWIDHT,
                                     12 * myMapManager.TileHEIGHT)
         end
+        evenement.current = false
     end
 
 end

@@ -138,7 +138,7 @@ end
 function shoot.damageEnn(pShoot)
     local sdx = pShoot.x - pShoot.ox - 35 * 1.5
     local sfx = pShoot.x + pShoot.ox - 35 * 1.5
-    local sdy = pShoot.y + pShoot.oy
+    local sdy = pShoot.y - pShoot.oy
     local sfy = pShoot.y + pShoot.oy
     for index, pEnn in ipairs(myEnnemy.list) do
         local dx = pEnn.x - myEnnemy.oX

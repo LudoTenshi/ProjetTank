@@ -159,4 +159,22 @@ function game.transitionDraw()
     love.graphics.setColor(1, 1, 1,1)
 end
 
+function game.newGame()
+    myHero.life = myHero.lifeMax
+    myEnnemy.list = {}
+    myHero.shoot = false
+    myHero.dead = false
+    myHero.x = 15 * myMapManager.TileWIDHT
+    myHero.y = 11 * myMapManager.TileHEIGHT
+    mySceneManager.map = "map1"
+    myDialogueManager.indexDial = 1
+    myDialogueManager.endDial = false
+    myDialogueManager.estEvenement = false
+    --reinitialize evenement 
+    for i, args in ipairs(myEvenement.lst) do
+        args.estExe = false
+    end
+    myEvenement.current = false
+end
+
 return game
