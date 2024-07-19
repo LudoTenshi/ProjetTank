@@ -20,72 +20,55 @@ local translation = {
             }
         },
         dialogue1 = {
-            {player = "Où suis-je ?"},
-            {pnj = {
-                    name = "Korisai",
-                    text = "Voix grave : \n tu te trouve dans l'antre du dragon de feu et glace."
-                }
-            },
-            {player = "Qu'elle est cette voix dans ma tête !"},
-            {pnj = {
-                    name = "Korisai",
-                    text = "Voix grave : \n Avance vers ton destin ! et déchaine tes pouvoirs."
-                }
-            },
-            {player = "Super ca m'aide beaucoup."},
-            {player = "En tout cas mes pouvoirs sont toujours actif"},
+            {player = "Humm … j’ai un mal de crâne.. \n c’est bizarre je ne reconnait rien autour de moi,\n je suis pourtant sure que j’étais sur le chemin pour aller en cours…\n Je me demande bien ou j’ai atterri."},
         },
         dialogue2 = {
-            {player = "Je comprend pas comment cette voix me parle il n'y a personne ici."},
             {pnj = {
                     name = "Korisai",
-                    text ="Voix grave : \n Je suis ton pouvoirs"
+                    text ="Voix grave : \n Tu devrais te méfier,\n je ressent deux présences néfastes autour de nous !"
                 }
             },
-            {player = "Mon pouvoir ?\n Comment peux tu me parler ?\n moi qui pensais que c'était juste une hallucination."},
+            {player = "Attend pourquoi je ne vois personne et j’entend une vois ?\n C’est un rêve !"},
             {pnj = {
                     name = "Korisai",
-                    text ="Voix grave : \n Oui ton pouvoir, je suis une partie de toi pour te guider dans ce monde."
+                    text ="Korisai : \n  toi qui peut m’entendre,\n tu n’es pas dans un rêve, moi c’est korisai !\n Je suis là pour t’aider."
                 }
             },
-            {player = "Donc je suis dans un autre monde, et que dois-je faire pour repartir"},
+            {player = "euh moi c’est Shota,\n mais pourquoi je ne vois personne d’autres que moi ? "},
             {pnj = {
                     name = "Korisai",
-                    text ="Voix grave : \n Je n'ai pas encore la réponse à cette question."
+                    text ="Korisai : \n hahahaha! Je suis l’incarnation de ton pouvoir, \n essai de me voir comme ton protecteur ! Tu te trouve dans la montagne de Sundaria, \n deux créatures très dangereuse se battent pour avoir le contrôle de la région.\n  Tu devrais aller tester un peu nos facultés avant d’entamer ta destinée."
                 }
             },
-            {player = "Bon... et comment dois-je t'appeler en cas de besoin ?"},
-            {pnj = {
-                    name = "Korisai",
-                    text ="Voix grave : \n Je n'ai pas de nom."
-                }
-            },
-            {player = "Il sera quand même plus pratique pour communiquer\n laisse moi réfléchir...\n que dirais-tu de 'Korisai' ?"},
-            {pnj = {
-                    name = "Korisai",
-                    text ="Korisai : \n J'accepte volontier ce nom."
-                }
-            },
-            {player = "*mon pourvoir a l'air de me ressembler dans sa facon de parler*"},
+            {player = "Merci pour les infos,\n bah c'est partie le feu et la glace en action ! \n je suppose que la sortie est par ce trou."},
+        },
+        dialogue3 = {
             {pnj = {
                     name = "Voice_World",
-                    text = "Voix du monde : \n Aquis : compétence expulsion de pouvoirs"
+                    text ="Voix du monde : \n Acquis : Condensation d’expulsion "
                 }
             },
-            {player = "quest-ce que ...?"},
+            {player = "C’est quoi ça encore ? \n Et c’est quoi ses trucs rampants ? "},
             {pnj = {
                     name = "Korisai",
-                    text ="Korisai : \n La voix du monde est une voix universel\n qui nous informe des motifications de tes compétences et autres."
+                    text ="Korisai : \n C’est la voix de ce monde !\n Je peux d’ailleurs te décrire chaque compétence que tu possèdes ! "
                 }
             },
-            {player = "D'accord et en quoi consiste cette compétence ?"},
             {pnj = {
                     name = "Korisai",
-                    text ="Korisai : \n tu peux maintenant expulser ton pourvoir avec violence pour attaquer"
+                    text ="Korisai : \n Par exemple celle-ci te permet de condenser l’energie des pouvoirs \n de ton monde sous forme de projectiles et d’expulser les ennemis avec.\n D’ailleurs les incarnations d’énergie maléfique que tu traite de rampant \n sont les ennemies idéaux pour tester nos pouvoirs dans ce monde ? "
                 }
+                
             },
-            {player = "C'est une chose que je savais pas faire ca\n on vera ce que ca donne !"},
-        },
+            {player = "Tu viens de dire ce monde, \n est ce que tu penses que je pourrais repartir dans le miens ? "},
+            {pnj = {
+                    name = "Korisai",
+                    text ="Korisai : Je n’ai pas les compétences pour répondre à ceci, mais nous trouverons surement la réponse ! "
+                }
+                
+            },
+            {player = "On verra plus tard, essayons déjà ce nouveau pouvoir !"},
+        }
     },
     en = {
         level = "Level",

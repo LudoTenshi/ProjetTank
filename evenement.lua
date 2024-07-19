@@ -40,6 +40,17 @@ evenement.lst = {
         y = 0,
         rX = screenWidth,
         rY = screenHeight,
+        type = "dialogue",
+        exe = 3,-- == sceneDial
+        erepeat = false,
+        estExe = false,
+    },
+    {
+        idMap = "map2",
+        x = 0,
+        y = 0,
+        rX = screenWidth,
+        rY = screenHeight,
         type = "function",
         exe = function()
             --print(#myEnnemy.list)

@@ -17,8 +17,10 @@ function sceneManager.update(dt)
     end
     if sceneManager.scene == "game1" then
         myDialogueManager.update(dt)
-        myHero.update(dt)
-        myEnnemy.update(dt)
+        if myInterface.estDialogue == false then
+            myHero.update(dt)
+            myEnnemy.update(dt)
+        end
         myInterface.update(dt)
         
     end
@@ -44,9 +46,9 @@ function sceneManager.draw()
     if sceneManager.scene == "game1" then
         myMapManager.draw(sceneManager.map)
         myHero.draw()
+        myEnnemy.draw()
         myInterface.draw()
         myDialogueManager.draw()
-        myEnnemy.draw()
     end
     if sceneManager.scene == "gameOver" then
         myMapManager.draw(sceneManager.map)
